@@ -6,10 +6,15 @@
   "scripts": {
     "start": "electron .",
     "clean": "rimraf ./build",
-    "build:main": "webpack --config config/webpack.main.config.js",
-    "build:preload": "webpack --config config/webpack.preload.config.js",
-    "build:renderer": "webpack --config config/webpack.renderer.config.js",
-    "build": "npm run clean && npm run build:main && npm run build:preload && npm run build:renderer"
+    "main": "webpack --config config/webpack.config.main.js",
+    "renderer:dev": "webpack-dev-server --config config/webpack.dev.renderer.js",
+    "renderer:prod": "webpack --config config/webpack.prod.renderer.js",
+    "dev:main": "dotenv -e .env.dev npm run main",
+    "dev:renderer": "npm run renderer:dev",
+    "dev": "npm run clean && npm run dev:main && npm run dev:renderer",
+    "build:main": "dotenv -e .env.prod npm run main",
+    "build:renderer": "npm run renderer:prod",
+    "build": "npm run clean && npm run build:main && npm run build:renderer"
   },
   "repository": {
     "type": "git",
@@ -28,11 +33,14 @@
   "homepage": "https://github.com/poplark/electron-typescript-boilerplate#readme",
   "devDependencies": {
     "copy-webpack-plugin": "^5.1.1",
+    "dotenv-cli": "^3.1.0",
     "electron": "^7.1.7",
     "rimraf": "^3.0.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.4",
     "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1",
+    "write-file-webpack-plugin": "^4.5.1"
   }
 }

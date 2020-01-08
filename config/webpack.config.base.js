@@ -1,14 +1,14 @@
 const path = require('path');
 const webpack = require('webpack');
 
-console.log('mode: ', process.env.MODE || 'production');
-console.log('devtool: ', process.env.DEVTOOL || false);
+console.log('mode: ', process.env.MODE || 'development');
+console.log('devtool: ', process.env.DEVTOOL || 'source-map');
 
 const output_path = 'build';
 
 module.exports = {
-  mode: process.env.MODE || 'production',
-  devtool: process.env.DEVTOOL || false,
+  mode: process.env.MODE || 'development',
+  devtool: process.env.DEVTOOL || 'source-map',
   entry: {
     // placeholder
   },
