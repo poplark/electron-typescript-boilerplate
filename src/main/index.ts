@@ -24,6 +24,7 @@ class View {
       maximizable: false,
       backgroundColor: '#FFF',
       webPreferences: {
+        nodeIntegration: true,
         preload: path.resolve(output, 'preload.js')
       }
     });
