@@ -1,11 +1,7 @@
-// const path = require('path');
-// const CopyPlugin = require('copy-webpack-plugin');
-const webpack = require('webpack');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WriteFilePlugin = require('write-file-webpack-plugin');
 const config = require('./webpack.config.base');
-
-config.mode = "development";
-config.devtool = "source-map";
 
 module.exports = [
   Object.assign({}, config, {
@@ -13,10 +9,19 @@ module.exports = [
       preload: './src/preload',
     },
     target: 'electron-preload',
+    module: {
+      rules: [{
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        include: [
+          path.resolve(__dirname, '..', 'src/preload'),
+        ],
+        use: {
+          loader: 'ts-loader'
+        }
+      }]
+    },
     plugins: [
-      new webpack.HotModuleReplacementPlugin({
-        multiStep: true
-      }),
       new WriteFilePlugin()
     ].concat(config.plugins)
   }),
@@ -25,11 +30,22 @@ module.exports = [
       renderer: './src/renderer',
     },
     target: 'electron-renderer',
+    module: {
+      rules: [{
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        include: [
+          path.resolve(__dirname, '..', 'src/renderer'),
+        ],
+        use: {
+          loader: 'ts-loader'
+        }
+      }]
+    },
     plugins: [
-      new webpack.HotModuleReplacementPlugin({
-        multiStep: true
+      new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, '..', 'src/view/index.html')
       }),
-      new WriteFilePlugin()
     ].concat(config.plugins)
   })
 ];

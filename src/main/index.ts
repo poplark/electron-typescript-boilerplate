@@ -1,9 +1,10 @@
 import { BrowserWindow, app, dialog } from 'electron';
 const path = require('path');
 
-console.log('main');
+const output = path.resolve(__dirname, '../..', process.env.ELECTRON_TB_WEBPACK_DEST);
+const isDevelopment = process.env.NODE_ENV !== 'production';
 
-const output = path.resolve(__dirname, '../..', OUTPUT_PATH);
+console.log('main', isDevelopment, process.env.NODE_ENV);
 
 class View {
   private mainWindow: BrowserWindow | undefined
@@ -29,21 +30,25 @@ class View {
       }
     });
 
-    // Open the DevTools.
-    this.mainWindow.webContents.openDevTools();
+    if (isDevelopment) {
+      // Open the DevTools.
+      this.mainWindow.webContents.openDevTools();
+      this.mainWindow.loadURL(`http://${process.env.ELECTRON_TB_WEBPACK_HOST || 'localhost'}:${process.env.ELECTRON_TB_WEBPACK_PORT || 3001}`);
+    } else {
+      this.mainWindow
+        .loadFile(path.resolve(output, 'index.html'))
+        .then((res) => {
+          console.log('load file ', res);
+        })
+        .catch(err => {
+          // todo - use error page
+          console.error('load file ', err);
+          dialog.showErrorBox('load file error', 'error msg');
+          // this.destroy();
+          // app.quit();
+        });
+    }
 
-    this.mainWindow
-      .loadFile(path.resolve(output, 'index.html'))
-      .then((res) => {
-        console.log('load file ', res);
-      })
-      .catch(err => {
-        // todo - use error page
-        console.error('load file ', err);
-        dialog.showErrorBox('load file error', 'error msg');
-        // this.destroy();
-        // app.quit();
-      });
     this.mainWindow.on('closed', this.destroy);
   }
 
@@ -64,7 +69,7 @@ app.on('window-all-closed', function () {
   }
 });
 app.on('activate', function () {
-  console.log('activ')
+  console.log('active')
   if (!view.isRunning) {
     view.init();
   }

@@ -1,19 +1,16 @@
 const path = require('path');
 const webpack = require('webpack');
 
-console.log('mode: ', process.env.MODE || 'development');
-console.log('devtool: ', process.env.DEVTOOL || 'source-map');
+const { stringified } = require('../scripts/env')();
+console.log('mode: ', process.env.ELECTRON_TB_WEBPACK_MODE || 'development');
 
-const output_path = 'build';
+const webpackDest = process.env.ELECTRON_TB_WEBPACK_DEST || 'build';
 
 module.exports = {
-  mode: process.env.MODE || 'development',
-  devtool: process.env.DEVTOOL || 'source-map',
-  entry: {
-    // placeholder
-  },
+  mode: process.env.ELECTRON_TB_WEBPACK_MODE || 'development',
+  devtool: process.env.ELECTRON_TB_WEBPACK_DEVTOOL || 'source-map',
   output: {
-    path: path.resolve(__dirname, '..', output_path),
+    path: path.resolve(__dirname, '..', webpackDest),
     filename: '[name].js',
   },
   resolve: {
@@ -29,9 +26,7 @@ module.exports = {
     }]
   },
   plugins: [
-    new webpack.DefinePlugin({
-      OUTPUT_PATH: JSON.stringify(output_path)
-    })
+    new webpack.DefinePlugin(stringified)
   ],
   node: {
     fs: 'empty',

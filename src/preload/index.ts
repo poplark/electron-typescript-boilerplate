@@ -2,7 +2,9 @@
 // It has the same sandbox as a Chrome extension.
 const { desktopCapturer } = require('electron');
 
-console.log('preload');
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
+console.log('preload', isDevelopment, process.env.NODE_ENV);
 
 window.addEventListener('DOMContentLoaded', () => {
   const replaceText = (selector, text) => {
